@@ -1,0 +1,57 @@
+{
+  "name": "@andyrmitchell/drizzle-robust-transaction",
+  "version": "0.0.1",
+  "description": "Sequentially run transactions in Postgres and Sqlite",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build_release": "npm run build_prepare && np",
+    "build": "tsup",
+    "pkglint": "./build/publint_pipeable.sh",
+    "build_prepare": "npm run build && npm run pkglint",
+    "prepublishOnly": "npm run build_prepare",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andymitchell/drizzle-robust-transaction.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@andyrmitchell/utils": "^0.7.6",
+    "@libsql/client": "^0.14.0",
+    "better-sqlite3": "^11.6.0",
+    "drizzle-kit": "^0.29.0",
+    "drizzle-orm": "^0.36.4"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.2.14",
+    "fs-extra": "^11.2.0",
+    "@andyrmitchell/file-io": "^0.10.12",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^29.5.12",
+    "@types/lodash-es": "^4.17.12",
+    "@types/uuid": "^9.0.8",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
