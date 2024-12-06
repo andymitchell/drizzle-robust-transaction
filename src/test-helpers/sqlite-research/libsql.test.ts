@@ -116,7 +116,7 @@ test(`LibSql fails at concurrent transactions even with busy_timeout`, async () 
 })
 
 
-test.only('Drizzle can be worked around to handle await in transactions backed by LibSql', async () => {
+test('Drizzle can be worked around to handle await in transactions backed by LibSql', async () => {
 
     const url = `file:${TEST_DIR}/${uuidv4()}.db`
 
