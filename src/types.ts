@@ -9,7 +9,6 @@ import {type PgDatabase } from 'drizzle-orm/pg-core';
 
 
 
-
 export type Dialect = 'pg' | 'sqlite';
 export type SqliteTransactionModes = 'deferred' | 'immediate' | 'exclusive';
 export type SqliteDatabases = LibSQLDatabase | BetterSQLite3Database;
