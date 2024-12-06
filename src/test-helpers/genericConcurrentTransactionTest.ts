@@ -93,8 +93,8 @@ export function createDrizzleExecutor(dialect: Dialect, db:Databases):Executor {
 
 
 type Returns = {run_id_1:string, run_id_2: string, run_transactions_started:string[], list:SchemaRow[]};
-export async function genericConcurrentTransactionTest(dialect: 'pg', execute:Executor, customTransaction: (callback:(tx:PgDatabases | pg.PgTransaction<any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
-export async function genericConcurrentTransactionTest(dialect: 'sqlite', execute:Executor, customTransaction: (callback:(tx:SqliteDatabases | sqlite.SQLiteTransaction<any, any, any, any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
+//export async function genericConcurrentTransactionTest(dialect: 'pg', execute:Executor, customTransaction: (callback:(tx:PgDatabases | pg.PgTransaction<any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
+//export async function genericConcurrentTransactionTest(dialect: 'sqlite', execute:Executor, customTransaction: (callback:(tx:SqliteDatabases | sqlite.SQLiteTransaction<any, any, any, any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
 /**
  * This test runs two transactions concurrently.
  * 
@@ -184,12 +184,10 @@ export async function genericConcurrentTransactionTest(dialect: Dialect, execute
 
 }
 
-export async function genericConcurrentTransactionTestInDrizzleWithRobustTransaction(dialect: 'pg', db:PgDatabases):Promise<Returns>
-export async function genericConcurrentTransactionTestInDrizzleWithRobustTransaction(dialect: 'sqlite', db:SqliteDatabases):Promise<Returns>
-export async function genericConcurrentTransactionTestInDrizzleWithRobustTransaction(dialect: Dialect, db:Databases):Promise<Returns> {
+export async function genericConcurrentTransactionTestInDrizzleWithRobustTransaction<D extends Dialect, DB extends Databases>(dialect: D, db:DB):Promise<Returns> {
 
     return await genericConcurrentTransactionTest(dialect as 'pg', createDrizzleExecutor(dialect as 'pg', db as PgDatabases), async (callback) => {
-        // @ts-ignore - can't fight against the type signatures for dialect
+        
         return robustTransaction(dialect, db, callback, {
             skip_global_memory_queue: true, // The global memory queue makes the test too easy, as the DB would never face true concurrency
             verbose: true

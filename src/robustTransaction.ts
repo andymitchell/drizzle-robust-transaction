@@ -18,6 +18,8 @@ function getMemoryQueue() {
 }
 
 
+//export async function robustTransaction<D extends 'pg', DB extends PgDatabases, T>(dialect: D, db:DB, callback: (db:PgTransaction<any, any, any>) => T | PromiseLike<T>):Promise<T>
+//export async function robustTransaction<D extends 'sqlite', DB extends SqliteDatabases, T>(dialect: D, db:DB, callback: (db:DB) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T>
 /**
  * A drop in replacement for Drizzle's `db.transaction`. 
  * 
@@ -29,9 +31,7 @@ function getMemoryQueue() {
  * @param db 
  * @param callback 
  */
-export async function robustTransaction<D extends PgDatabases, T>(dialect: 'pg', db:D, callback: (db:PgTransaction<any, any, any>) => T | PromiseLike<T>):Promise<T>
-export async function robustTransaction<D extends SqliteDatabases, T>(dialect: 'sqlite', db:D, callback: (db:D) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T>
-export async function robustTransaction<D extends Databases, T>(dialect: Dialect, db:D, callback: (db:D | PgTransaction<any, any, any>) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T> {
+export async function robustTransaction<D extends Dialect, DB extends Databases, T>(dialect: D, db:DB, callback: (db:DB | PgTransaction<any, any, any>) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T> {
 
     let result:T;
     if( isDialectPg(dialect, db) ) {

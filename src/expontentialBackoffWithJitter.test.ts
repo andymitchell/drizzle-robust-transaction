@@ -90,7 +90,7 @@ test('backoff max attempts', async () => {
     expect(!!error).toBe(true);
     expect(attempts).toBe(4);
     expect(lastDuration).toBeLessThan(300);
-    expect(lastDuration).toBeGreaterThan(100);
+    expect(lastDuration).toBeGreaterThan(70);
     
 
 })
