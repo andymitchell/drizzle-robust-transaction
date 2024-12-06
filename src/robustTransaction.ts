@@ -4,7 +4,7 @@ import { QueueMemory} from '@andyrmitchell/utils';
 import {PgTransaction } from 'drizzle-orm/pg-core';
 import { exponentialBackoffWithJitter } from './expontentialBackoffWithJitter';
 import { sql } from "drizzle-orm";
-import type { Databases, Dialect,  PgDatabases, SqliteDatabases, SqliteOptions, SqliteTransactionModes } from "./types";
+import type { Databases, Dialect,  SqliteOptions, SqliteTransactionModes } from "./types";
 import { isDialectPg, isDialectSqlite } from "./types";
 
 
