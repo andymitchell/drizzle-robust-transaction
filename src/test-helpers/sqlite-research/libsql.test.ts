@@ -194,7 +194,7 @@ test.only('Drizzle can be worked around to handle await in transactions backed b
             const items = await db.select().from(schema);
 
 
-            console.log("Found items: ", items);
+            
             const available = items.find(x => !x.run_id);
             if (available) {
                 await db

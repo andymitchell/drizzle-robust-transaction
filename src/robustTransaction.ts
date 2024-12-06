@@ -1,11 +1,7 @@
 
-import { drizzle as drizzlePg, PgliteDatabase } from "drizzle-orm/pglite";
-import { drizzle as drizzleLibsql, LibSQLDatabase } from 'drizzle-orm/libsql';
-import {BetterSQLite3Database, drizzle as drizzleBetterSqlite} from 'drizzle-orm/better-sqlite3';
+import { QueueMemory} from '@andyrmitchell/utils';
 
-import { QueueMemory, uid } from '@andyrmitchell/utils';
-
-import {PgTransaction, type PgDatabase } from 'drizzle-orm/pg-core';
+import {PgTransaction } from 'drizzle-orm/pg-core';
 import { exponentialBackoffWithJitter } from './expontentialBackoffWithJitter';
 import { sql } from "drizzle-orm";
 import type { Databases, Dialect,  PgDatabases, SqliteDatabases, SqliteOptions, SqliteTransactionModes } from "./types";
@@ -22,6 +18,17 @@ function getMemoryQueue() {
 }
 
 
+/**
+ * A drop in replacement for Drizzle's `db.transaction`. 
+ * 
+ * For pg it's just a pass through. 
+ * 
+ * For sqlite, it fixes a lot of driver inconsistencies to make sure that it can safely run two concurrent transactions without interleaving overlap. I.e. it becomes consistent with the way Postgres transactions behave.
+ * 
+ * @param dialect 
+ * @param db 
+ * @param callback 
+ */
 export async function robustTransaction<D extends PgDatabases, T>(dialect: 'pg', db:D, callback: (db:PgTransaction<any, any, any>) => T | PromiseLike<T>):Promise<T>
 export async function robustTransaction<D extends SqliteDatabases, T>(dialect: 'sqlite', db:D, callback: (db:D) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T>
 export async function robustTransaction<D extends Databases, T>(dialect: Dialect, db:D, callback: (db:D | PgTransaction<any, any, any>) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T> {

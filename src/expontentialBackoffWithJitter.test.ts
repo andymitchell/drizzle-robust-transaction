@@ -1,4 +1,4 @@
-import { sleep } from "@andyrmitchell/utils";
+
 import { exponentialBackoffWithJitter } from "./expontentialBackoffWithJitter"
 
 test('basic', async () => {
