@@ -1,15 +1,11 @@
 import { robustTransaction } from "./robustTransaction"
-import { isDialectPg, isDialectSqlite, type Databases, type Dialect, type SqliteOptions } from "./types"
+import { type SqliteOptions } from "./types"
 
 
 export {
-    robustTransaction,
-    isDialectPg,
-    isDialectSqlite
+    robustTransaction
 }
 
 export type {
-    SqliteOptions,
-    Databases,
-    Dialect
+    SqliteOptions
 }

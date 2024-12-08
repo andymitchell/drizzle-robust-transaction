@@ -4,9 +4,10 @@ import { uid } from "@andyrmitchell/utils";
 import Database from "better-sqlite3";
 import {  drizzle as drizzleBetterSqlite } from 'drizzle-orm/better-sqlite3';
 import { createDrizzleExecutor, genericConcurrentTransactionTest, type TestExpectations } from "../genericConcurrentTransactionTest";
-import type { SqliteDatabases } from "../../types";
+
 import { createClient } from "@libsql/client";
 import { drizzle as drizzleLibsql } from 'drizzle-orm/libsql';
+import type { SqliteDdtDatabases } from "@andyrmitchell/drizzle-dialect-types";
 
 const TEST_DIR = getRelativeTestDir(import.meta.url, 'test-schemas/drizzle');
 
@@ -19,11 +20,11 @@ afterAll(() => {
     clearDir(TEST_DIR);
 })
 
-async function genericConcurrentTransactionTestForSqliteDrizzle(db:SqliteDatabases, testExpectations?:TestExpectations) {
+async function genericConcurrentTransactionTestForSqliteDrizzle(db:SqliteDdtDatabases, testExpectations?:TestExpectations) {
     let error:Error | undefined;
     const result = await genericConcurrentTransactionTest(
         'sqlite', 
-        createDrizzleExecutor('sqlite', db), 
+        createDrizzleExecutor(db), 
         async (callback) => {
             try {
                 await db.transaction(async tx => {

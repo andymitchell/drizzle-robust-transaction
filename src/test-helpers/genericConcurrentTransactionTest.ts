@@ -2,9 +2,9 @@ import { uid } from "@andyrmitchell/utils";
 
 import * as sqlite from "drizzle-orm/sqlite-core";
 import * as pg from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { sql, type Dialect } from "drizzle-orm";
 import { robustTransaction } from "../robustTransaction";
-import { isDialectPg, type Databases, type Dialect, type PgDatabases, type SqliteDatabases } from "../types";
+import { isDdtDialectPg, type DdtDatabases, type SqliteDdtDatabases } from "@andyrmitchell/drizzle-dialect-types";
 
 
 const pgSchemaString = `CREATE TABLE IF NOT EXISTS users (
@@ -45,15 +45,13 @@ export const sqliteSchema = sqlite.sqliteTable('users', {
 
 type SchemaRow = {id: number, name: string, run_id?: string | null};
 type ExecutorActions = {name: 'list'} | {name: 'execute', raw_sql:string};
-type Executor = (action:ExecutorActions, tx?: Databases | pg.PgTransaction<any> | sqlite.SQLiteTransaction<any, any, any, any>) => Promise<{rows: SchemaRow[]}>
+type Executor = (action:ExecutorActions, tx?: DdtDatabases | pg.PgTransaction<any> | sqlite.SQLiteTransaction<any, any, any, any>) => Promise<{rows: SchemaRow[]}>
 export type TestExpectations = 'success' | 'custom';
 
-export function createDrizzleExecutor(dialect: 'pg', db:PgDatabases):Executor;
-export function createDrizzleExecutor(dialect: 'sqlite', db:SqliteDatabases):Executor;
-export function createDrizzleExecutor(dialect: Dialect, db:Databases):Executor {
+export function createDrizzleExecutor(db:DdtDatabases):Executor {
   
 
-    if( isDialectPg(dialect, db) ) {
+    if( isDdtDialectPg(db) ) {
         return async (action, tx?) => {
             const finalDb = (tx as pg.PgTransaction<any>) ?? db;
             let rows:SchemaRow[] = [];
@@ -72,7 +70,7 @@ export function createDrizzleExecutor(dialect: Dialect, db:Databases):Executor {
         }
     } else {
         return async (action, tx?) => {
-            const finalDb = (tx as SqliteDatabases) ?? db;
+            const finalDb = (tx as SqliteDdtDatabases) ?? db;
             let rows:SchemaRow[] = [];
             
             if( action.name==='list' ) {
@@ -93,8 +91,8 @@ export function createDrizzleExecutor(dialect: Dialect, db:Databases):Executor {
 
 
 type Returns = {run_id_1:string, run_id_2: string, run_transactions_started:string[], list:SchemaRow[]};
-//export async function genericConcurrentTransactionTest(dialect: 'pg', execute:Executor, customTransaction: (callback:(tx:PgDatabases | pg.PgTransaction<any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
-//export async function genericConcurrentTransactionTest(dialect: 'sqlite', execute:Executor, customTransaction: (callback:(tx:SqliteDatabases | sqlite.SQLiteTransaction<any, any, any, any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
+//export async function genericConcurrentTransactionTest(dialect: 'pg', execute:Executor, customTransaction: (callback:(tx:PgDdtDatabases | pg.PgTransaction<any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
+//export async function genericConcurrentTransactionTest(dialect: 'sqlite', execute:Executor, customTransaction: (callback:(tx:SqliteDdtDatabases | sqlite.SQLiteTransaction<any, any, any, any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns>
 /**
  * This test runs two transactions concurrently.
  * 
@@ -112,7 +110,7 @@ type Returns = {run_id_1:string, run_id_2: string, run_transactions_started:stri
  * @param testExpectations Whether to enforce success expectations, or let the calling-test decide how to evaluate it (e.g. to check it failed as it expects)
  * @returns 
  */
-export async function genericConcurrentTransactionTest(dialect: Dialect, execute:Executor, customTransaction: (callback:(tx:Databases | pg.PgTransaction<any> | sqlite.SQLiteTransaction<any, any, any, any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns> {
+export async function genericConcurrentTransactionTest(dialect: Dialect, execute:Executor, customTransaction: (callback:(tx:DdtDatabases | pg.PgTransaction<any> | sqlite.SQLiteTransaction<any, any, any, any>) => any) => Promise<void>, testExpectations?:TestExpectations):Promise<Returns> {
     
     if( dialect==='pg' ) {
         await execute({name: 'execute', raw_sql: pgSchemaString})
@@ -184,11 +182,11 @@ export async function genericConcurrentTransactionTest(dialect: Dialect, execute
 
 }
 
-export async function genericConcurrentTransactionTestInDrizzleWithRobustTransaction<D extends Dialect, DB extends Databases>(dialect: D, db:DB):Promise<Returns> {
+export async function genericConcurrentTransactionTestInDrizzleWithRobustTransaction<D extends Dialect, DB extends DdtDatabases>(dialect: D, db:DB):Promise<Returns> {
 
-    return await genericConcurrentTransactionTest(dialect as 'pg', createDrizzleExecutor(dialect as 'pg', db as PgDatabases), async (callback) => {
+    return await genericConcurrentTransactionTest(dialect, createDrizzleExecutor(db), async (callback) => {
         
-        return robustTransaction(dialect, db, callback, {
+        return robustTransaction(db, callback, {
             skip_global_memory_queue: true, // The global memory queue makes the test too easy, as the DB would never face true concurrency
             verbose: true
         })

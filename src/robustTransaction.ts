@@ -4,8 +4,9 @@ import { QueueMemory} from '@andyrmitchell/utils';
 import {PgTransaction } from 'drizzle-orm/pg-core';
 import { exponentialBackoffWithJitter } from './expontentialBackoffWithJitter';
 import { sql } from "drizzle-orm";
-import type { Databases, Dialect,  SqliteOptions, SqliteTransactionModes } from "./types";
-import { isDialectPg, isDialectSqlite } from "./types";
+import type {  SqliteOptions } from "./types";
+
+import { isDdtDialectPg, isDdtDialectSqlite, type DdtDatabases, type DdtSqliteTransactionMode } from '@andyrmitchell/drizzle-dialect-types';
 
 
 
@@ -18,8 +19,8 @@ function getMemoryQueue() {
 }
 
 
-//export async function robustTransaction<D extends 'pg', DB extends PgDatabases, T>(dialect: D, db:DB, callback: (db:PgTransaction<any, any, any>) => T | PromiseLike<T>):Promise<T>
-//export async function robustTransaction<D extends 'sqlite', DB extends SqliteDatabases, T>(dialect: D, db:DB, callback: (db:DB) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T>
+//export async function robustTransaction<D extends 'pg', DB extends PgDdtDatabases, T>(dialect: D, db:DB, callback: (db:PgTransaction<any, any, any>) => T | PromiseLike<T>):Promise<T>
+//export async function robustTransaction<D extends 'sqlite', DB extends SqliteDdtDatabases, T>(dialect: D, db:DB, callback: (db:DB) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T>
 /**
  * A drop in replacement for Drizzle's `db.transaction`. 
  * 
@@ -31,10 +32,10 @@ function getMemoryQueue() {
  * @param db 
  * @param callback 
  */
-export async function robustTransaction<D extends Dialect, DB extends Databases, T>(dialect: D, db:DB, callback: (db:DB | PgTransaction<any, any, any>) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T> {
+export async function robustTransaction<DB extends DdtDatabases, T>(db:DB, callback: (db:DB | PgTransaction<any, any, any>) => T | PromiseLike<T>, options?: SqliteOptions):Promise<T> {
 
     let result:T;
-    if( isDialectPg(dialect, db) ) {
+    if( isDdtDialectPg(db) ) {
         // Drizzle transactions behave perfectly well
         result = await new Promise<T>((accept) => {
             db.transaction(async (tx) => {
@@ -42,7 +43,7 @@ export async function robustTransaction<D extends Dialect, DB extends Databases,
                 accept(await callback(tx))
             })
         })
-    } else if( isDialectSqlite(dialect, db) ) {
+    } else if( isDdtDialectSqlite(db) ) {
         
 
         const finalOptions:Required<SqliteOptions> = {
@@ -54,7 +55,7 @@ export async function robustTransaction<D extends Dialect, DB extends Databases,
         }
         
 
-        const MODES:Record<SqliteTransactionModes, string> = {
+        const MODES:Record<DdtSqliteTransactionMode, string> = {
             'deferred': 'DEFERRED',
             'immediate': 'IMMEDIATE',
             'exclusive': 'EXCLUSIVE'
