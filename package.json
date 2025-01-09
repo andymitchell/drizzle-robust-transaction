@@ -36,7 +36,7 @@
   "license": "MIT",
   "dependencies": {
     "@andyrmitchell/drizzle-dialect-types": "^0.0.7",
-    "@andyrmitchell/utils": "^0.7.6",
+    "@andyrmitchell/utils": "^0.8.3",
     "@libsql/client": "^0.14.0",
     "better-sqlite3": "^11.6.0",
     "drizzle-kit": "^0.29.0",
