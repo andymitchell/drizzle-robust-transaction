@@ -1,5 +1,5 @@
 import { ensureDirSync } from "fs-extra";
-import { clearDir, getRelativeTestDir } from "../test-helpers";
+import { clearDir, getRelativeTestDir } from "../test-helpers.ts";
 import { sleep } from "@andyrmitchell/utils";
 import { uid } from "@andyrmitchell/utils/uid";
 import Database from "better-sqlite3";
