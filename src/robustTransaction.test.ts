@@ -1,6 +1,6 @@
 import { ensureDirSync } from "fs-extra";
-import { clearDir, getRelativeTestDir } from "./test-helpers/test-helpers";
-import { uid } from "@andyrmitchell/utils";
+import { clearDir, getRelativeTestDir } from "./test-helpers/test-helpers.ts";
+import { uid } from "@andyrmitchell/utils/uid";
 
 import { drizzle as drizzlePg } from "drizzle-orm/pglite";
 import { drizzle as drizzleLibsql } from 'drizzle-orm/libsql';
@@ -9,7 +9,7 @@ import { drizzle as drizzleBetterSqlite} from 'drizzle-orm/better-sqlite3';
 import Database from "better-sqlite3";
 import { PGlite } from "@electric-sql/pglite";
 import { createClient } from "@libsql/client";
-import {  genericConcurrentTransactionTestInDrizzleWithRobustTransaction} from "./test-helpers/genericConcurrentTransactionTest";
+import {  genericConcurrentTransactionTestInDrizzleWithRobustTransaction} from "./test-helpers/genericConcurrentTransactionTest.ts";
 
 
 const TEST_DIR = getRelativeTestDir(import.meta.url, 'test-schemas/robust-transactions');

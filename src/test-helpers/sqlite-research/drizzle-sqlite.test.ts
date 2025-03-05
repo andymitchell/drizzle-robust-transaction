@@ -1,9 +1,9 @@
 import { ensureDirSync } from "fs-extra";
-import { clearDir, getRelativeTestDir } from "../test-helpers";
-import { uid } from "@andyrmitchell/utils";
+import { clearDir, getRelativeTestDir } from "../test-helpers.ts";
+import { uid } from "@andyrmitchell/utils/uid";
 import Database from "better-sqlite3";
 import {  drizzle as drizzleBetterSqlite } from 'drizzle-orm/better-sqlite3';
-import { createDrizzleExecutor, genericConcurrentTransactionTest, type TestExpectations } from "../genericConcurrentTransactionTest";
+import { createDrizzleExecutor, genericConcurrentTransactionTest, type TestExpectations } from "../genericConcurrentTransactionTest.ts";
 
 import { createClient } from "@libsql/client";
 import { drizzle as drizzleLibsql } from 'drizzle-orm/libsql';

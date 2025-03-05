@@ -1,10 +1,10 @@
 
-import { QueueMemory} from '@andyrmitchell/utils';
+import { QueueMemory} from '@andyrmitchell/utils/queue';
 
 import {PgTransaction } from 'drizzle-orm/pg-core';
-import { exponentialBackoffWithJitter } from './expontentialBackoffWithJitter';
+import { exponentialBackoffWithJitter } from './expontentialBackoffWithJitter.ts';
 import { sql } from "drizzle-orm";
-import type {  SqliteOptions } from "./types";
+import type {  SqliteOptions } from "./types.ts";
 
 import { isDdtDialectPg, isDdtDialectSqlite, type DdtDatabases, type DdtSqliteTransactionMode } from '@andyrmitchell/drizzle-dialect-types';
 

@@ -1,5 +1,5 @@
-import { robustTransaction } from "./robustTransaction"
-import { type SqliteOptions } from "./types"
+import { robustTransaction } from "./robustTransaction.ts"
+import { type SqliteOptions } from "./types.ts"
 
 
 export {

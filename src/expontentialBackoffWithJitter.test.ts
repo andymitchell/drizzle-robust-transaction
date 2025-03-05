@@ -1,5 +1,5 @@
 
-import { exponentialBackoffWithJitter } from "./expontentialBackoffWithJitter"
+import { exponentialBackoffWithJitter } from "./expontentialBackoffWithJitter.ts"
 
 test('basic', async () => {
 
