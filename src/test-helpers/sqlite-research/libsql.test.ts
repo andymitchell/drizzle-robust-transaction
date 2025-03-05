@@ -1,7 +1,7 @@
 import { test } from 'vitest';
 import { fileURLToPath } from 'url';
 import { createClient } from "@libsql/client"; // "^0.14.0"
-import {v4 as uuidv4} from 'uuid';
+
 import {dirname} from 'path';
 import { drizzle as drizzleLibsql, LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as pg from "drizzle-orm/pg-core";
@@ -9,7 +9,7 @@ import * as pg from "drizzle-orm/pg-core";
 import { clearDir, getRelativeTestDir } from '../test-helpers.ts';
 import { ensureDirSync} from 'fs-extra';
 import { eq, sql } from 'drizzle-orm';
-import { uid } from '@andyrmitchell/utils/uid';
+import { uid, uuidV4 } from '@andyrmitchell/utils/uid';
 
 // LibSql doesn't seem to support busy_timeout https://www.sqlite.org/c3ref/busy_timeout.html 
 // This means that two transactions that overlap will result in a "database is locked" error, and the app code has to handle retrying.
@@ -37,7 +37,7 @@ test(`LibSql fails at concurrent transactions even with busy_timeout`, async () 
     const testDir = `${dirname(fileURLToPath(import.meta.url))}/test-schemas`
     
 
-    const url = `file:${testDir}/${uuidv4()}.db`
+    const url = `file:${testDir}/${uuidV4()}.db`
 
     // Turn on WAL mode. Speeding things up, making a transaction collision less likely. 
     /*
@@ -118,7 +118,7 @@ test(`LibSql fails at concurrent transactions even with busy_timeout`, async () 
 
 test('Drizzle can be worked around to handle await in transactions backed by LibSql', async () => {
 
-    const url = `file:${TEST_DIR}/${uuidv4()}.db`
+    const url = `file:${TEST_DIR}/${uuidV4()}.db`
 
     // Turn on WAL mode. Speeding things up, making a transaction collision less likely. 
     /*
