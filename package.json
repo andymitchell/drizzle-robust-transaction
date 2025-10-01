@@ -1,6 +1,6 @@
 {
   "name": "@andyrmitchell/drizzle-robust-transaction",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Sequentially run transactions in Postgres and Sqlite",
   "type": "module",
   "exports": {
