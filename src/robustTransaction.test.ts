@@ -1,6 +1,6 @@
 import { ensureDirSync } from "fs-extra";
 import { clearDir, getRelativeTestDir } from "./test-helpers/test-helpers.ts";
-import { uid } from "@andyrmitchell/utils/uid";
+import { uid } from "@andymitchell/utils/uid";
 
 import { drizzle as drizzlePg } from "drizzle-orm/pglite";
 import { drizzle as drizzleLibsql } from 'drizzle-orm/libsql';

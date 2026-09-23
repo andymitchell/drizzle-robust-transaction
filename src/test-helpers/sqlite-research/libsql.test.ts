@@ -9,7 +9,7 @@ import * as pg from "drizzle-orm/pg-core";
 import { clearDir, getRelativeTestDir } from '../test-helpers.ts';
 import { ensureDirSync} from 'fs-extra';
 import { eq, sql } from 'drizzle-orm';
-import { uid, uuidV4 } from '@andyrmitchell/utils/uid';
+import { uid, uuidV4 } from '@andymitchell/utils/uid';
 
 // LibSql doesn't seem to support busy_timeout https://www.sqlite.org/c3ref/busy_timeout.html 
 // This means that two transactions that overlap will result in a "database is locked" error, and the app code has to handle retrying.

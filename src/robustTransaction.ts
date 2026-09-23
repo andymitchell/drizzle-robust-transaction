@@ -1,5 +1,5 @@
 
-import { QueueMemory} from '@andyrmitchell/utils/queue';
+import { QueueMemory} from '@andymitchell/utils/queue';
 
 import {PgTransaction } from 'drizzle-orm/pg-core';
 import { exponentialBackoffWithJitter } from './expontentialBackoffWithJitter.ts';

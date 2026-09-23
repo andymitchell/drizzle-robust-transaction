@@ -1,6 +1,6 @@
-import { sleep } from "@andyrmitchell/utils";
+import { sleep } from "@andymitchell/utils";
 
-// TODO Move me to @andyrmitchell/utils
+// TODO Move me to @andymitchell/utils
 
 type Options = {
     max_time_ms?: number,

@@ -1,6 +1,6 @@
 import { ensureDirSync } from "fs-extra";
 import { clearDir, getRelativeTestDir } from "../test-helpers.ts";
-import { uid } from "@andyrmitchell/utils/uid";
+import { uid } from "@andymitchell/utils/uid";
 import Database from "better-sqlite3";
 import {  drizzle as drizzleBetterSqlite } from 'drizzle-orm/better-sqlite3';
 import { createDrizzleExecutor, genericConcurrentTransactionTest, type TestExpectations } from "../genericConcurrentTransactionTest.ts";

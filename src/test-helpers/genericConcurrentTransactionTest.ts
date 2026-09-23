@@ -1,4 +1,4 @@
-import { uid } from "@andyrmitchell/utils/uid";
+import { uid } from "@andymitchell/utils/uid";
 
 import * as sqlite from "drizzle-orm/sqlite-core";
 import * as pg from "drizzle-orm/pg-core";
