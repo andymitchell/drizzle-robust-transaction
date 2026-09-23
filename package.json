@@ -3,6 +3,7 @@
   "version": "0.0.8",
   "description": "Sequentially run transactions in Postgres and Sqlite",
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
