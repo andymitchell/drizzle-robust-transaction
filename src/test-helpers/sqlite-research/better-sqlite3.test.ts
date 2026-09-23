@@ -62,10 +62,11 @@ test('BetterSqlite3 blocks and waits for transactions when synchronous', async (
 })
 
 
-test('BetterSqlite3 cannot handle async code in transactions', async () => {
-    // This is confirmed under 'caveats' in https://github.com/WiseLibs/better-sqlite3/blob/HEAD/docs/api.md#transactionfunction---function 
+test('BetterSqlite3 rejects async code in transactions', () => {
+    // Transactions must be synchronous: see 'caveats' in https://github.com/WiseLibs/better-sqlite3/blob/HEAD/docs/api.md#transactionfunction---function
+    // A transaction function that returns a promise throws, and the transaction is rolled back.
 
-    const url = `${TEST_DIR}/test-${uid()}.db` // Switched to eliminate possible resets with connection drops 
+    const url = `${TEST_DIR}/test-${uid()}.db` // Switched to eliminate possible resets with connection drops
 
 
     const client = new Database(url, { timeout: 0 });
@@ -79,33 +80,16 @@ test('BetterSqlite3 cannot handle async code in transactions', async () => {
         )
     `);
 
+    // The write happens before the await, so nothing is left running once the test ends
+    const asyncTransaction = client.transaction(async () => {
+        client.prepare("INSERT INTO users (name) VALUES (@name)").run({ name: 'Alice' });
+        await sleep(10);
+    });
 
-    const txPath1 = new Promise<void>((accept) => {
-        client.transaction(async () => {
-            await sleep(10);
-            client.prepare("INSERT INTO users (name) VALUES (@name)").run({ name: 'Alice' });
-            client.prepare("UPDATE users SET name = @name").run({ name: 'Bob' });
-        }).deferred()
-        accept();
-    })
-
-    const txPath2 = new Promise<void>((accept) => {
-        client.transaction(async () => {
-            await sleep(10);
-            const result = client.prepare('SELECT * FROM users').all();
-            if (result.length > 0) {
-                client.prepare("UPDATE users SET name = @name").run({ name: 'Charleen' });
-                client.prepare("UPDATE users SET name = @name").run({ name: 'David' });
-            }
-        }).deferred()
-        accept();
-    })
-
-    await txPath1;
-    await txPath2;
+    expect(() => asyncTransaction.deferred()).toThrow('Transaction function cannot return a promise');
 
     const result = client.prepare('SELECT * FROM users').all() as { id: number, name: string }[];
-    expect(result.length).toBe(0); // The await causes the transaction to cancel 
+    expect(result.length).toBe(0); // The insert was rolled back
 
 
 })
