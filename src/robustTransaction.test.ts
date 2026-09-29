@@ -10,6 +10,7 @@ import Database from "better-sqlite3";
 import { PGlite } from "@electric-sql/pglite";
 import { createClient } from "@libsql/client";
 import {  genericConcurrentTransactionTestInDrizzleWithRobustTransaction} from "./test-helpers/genericConcurrentTransactionTest.ts";
+import { robustTransaction } from "./robustTransaction.ts";
 
 
 const TEST_DIR = getRelativeTestDir(import.meta.url, 'test-schemas/robust-transactions');
@@ -153,5 +154,19 @@ test('genericConcurrentTransactionTestInDrizzleWithRobustTransaction libsql [wal
 
     const db = drizzleLibsql(client);
     await genericConcurrentTransactionTestInDrizzleWithRobustTransaction('sqlite', db);
+
+})
+
+
+test('an error thrown inside a sqlite transaction reaches the caller unchanged', async () => {
+
+    const client = new Database(`${TEST_DIR}/test-${uid()}.db`);
+    const db = drizzleBetterSqlite({ client });
+    const thrown = new Error('constraint broken');
+
+    const rejection = await robustTransaction(db, async () => { throw thrown; }).then(() => 'resolved', (e: unknown) => e);
+
+    expect(rejection).toBe(thrown);
+    expect(thrown.message).toBe('constraint broken');
 
 })
